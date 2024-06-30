@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="https://i.ibb.co/XWTsgJj/dit-billednavn.png" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiden Går</title>
+    <style>
+        body {
+            background-image: url(https://external-preview.redd.it/7BQ9Ig391FbwCzMSgnCCgrzbEpnWXufcUSKwe6g7GXI.jpg?auto=webp&s=7729ce0fa75865ea3e0a40076360938065072bfe);
+            background-size: cover; 
+            background-repeat: no-repeat;
+            background-position: center center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center; 
+        }
+        .info {
+            background-color: rgba(0, 0, 0, 0.5); 
+            height: 200px;
+            width: 50%;
+            text-align: center;
+            padding: 20px;
+            border-radius: 20px;
+        }
+    </style>
+    <script>
+        let timerInterval;
+        let startTime;
+
+        console.log("Lavet af Scott Guldbaek kl.22:09 - d.15/06/2024");
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var currentDateElement = document.getElementById("currentDate");
+            var currentDate = new Date();
+
+            var options = { year: 'numeric', month: 'long', day: 'numeric' };
+            var formattedDate = currentDate.toLocaleDateString('da-DK', options);
+
+            currentDateElement.textContent = formattedDate;
+        });
+
+        function startTimer() {
+            if (!localStorage.getItem('startTime')) {
+                startTime = new Date().getTime();
+                localStorage.setItem('startTime', startTime);
+            } else {
+                startTime = parseInt(localStorage.getItem('startTime'), 10);
+            }
+            timerInterval = setInterval(updateTimer, 1000);
+            updateTimer(); // Update timer immediately upon starting
+        }
+
+        function updateTimer() {
+            const currentTime = new Date().getTime();
+            const elapsedTime = currentTime - startTime;
+            const seconds = Math.floor((elapsedTime / 1000) % 60);
+            const minutes = Math.floor((elapsedTime / (1000 * 60)) % 60);
+            const hours = Math.floor((elapsedTime / (1000 * 60 * 60)) % 24);
+            document.getElementById('timer').textContent = `${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        // Automatically start the timer when the page loads
+        startTimer();
+    </script>
+</head>
+<body>
+    <div class="info">
+        <h1 style="text-shadow: 2px 2px gray;">Tid, der er gået siden du åbnede siden</h1>
+        <div id="timer" style="text-shadow: 2px 2px gray;">0h 0m 0s</div>
+        <h3 style="line-height: 6; text-shadow: 2px 2px gray;">Dagens dato er: <span id="currentDate"></span></h3>
+    </div>
+</body>
+</html>
