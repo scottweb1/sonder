@@ -39,9 +39,15 @@
             margin-top: 20px;
             font-size: 24px;
         }
+
+        .start-text {
+            font-size: 30px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
+    <div class="start-text" id="start-text">Tryk for at starte</div>
     <audio id="background-audio">
         <source src="roverflexx.mp3" type="audio/mpeg">
         Din browser understøtter ikke afspilning af lydfiler.
@@ -58,6 +64,7 @@
             var playPromise = audio.play();
             var currentTimeElement = document.getElementById('current-time');
             var highscoreElement = document.getElementById('highscore');
+            var startText = document.getElementById('start-text');
 
             var currentTime = 0;
             var highscore = localStorage.getItem('highscore') || 0;
@@ -80,10 +87,12 @@
             if (playPromise !== undefined) {
                 playPromise.then(function() {
                     timerInterval = setInterval(updateTimer, 1000);
+                    startText.style.display = 'none'; // Skjul start-teksten
                 }).catch(function(error) {
                     document.body.addEventListener('click', function() {
                         audio.play();
                         timerInterval = setInterval(updateTimer, 1000);
+                        startText.style.display = 'none'; // Skjul start-teksten
                     }, {once: true});
                 });
             }
