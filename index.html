@@ -5,10 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sondergaard</title>
     <style>
-        body {background-color: black;}
+        body {
+            background-color: black;
+            color: white;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
         .rotate {
-            width: 200px; /* Juster størrelsen som ønsket */
-            height: 200px; /* Juster størrelsen som ønsket */
+            width: 400px; /* Juster størrelsen som ønsket */
+            height: 400px; /* Juster størrelsen som ønsket */
             animation: spin 4s linear infinite;
         }
 
@@ -21,9 +31,13 @@
             }
         }
 
-        /* Skjul audio-elementet */
         audio {
             display: none;
+        }
+
+        .timer {
+            margin-top: 20px;
+            font-size: 24px;
         }
     </style>
 </head>
@@ -33,24 +47,53 @@
         Din browser understøtter ikke afspilning af lydfiler.
     </audio>
     <img src="https://yt3.googleusercontent.com/boN_PkudgYzV03V58apEDgM8GMoLDPPcv5IFJ6Xtnfexn0fduAr2DLo3wTp-zQFMTMxCGaiw=s900-c-k-c0x00ffffff-no-rj" alt="Roterende Billede" class="rotate">
+    <div class="timer">
+        Tid lyttet: <span id="current-time">0</span> sekunder<br>
+        Highscore: <span id="highscore">0</span> sekunder
+    </div>
 
     <script>
         window.addEventListener('load', function() {
             var audio = document.getElementById('background-audio');
             var playPromise = audio.play();
+            var currentTimeElement = document.getElementById('current-time');
+            var highscoreElement = document.getElementById('highscore');
+
+            var currentTime = 0;
+            var highscore = localStorage.getItem('highscore') || 0;
+
+            highscoreElement.textContent = highscore;
+
+            function updateTimer() {
+                currentTime++;
+                currentTimeElement.textContent = currentTime;
+
+                if (currentTime > highscore) {
+                    highscore = currentTime;
+                    highscoreElement.textContent = highscore;
+                    localStorage.setItem('highscore', highscore);
+                }
+            }
+
+            var timerInterval;
 
             if (playPromise !== undefined) {
                 playPromise.then(function() {
-                    // Lyd blev afspillet automatisk.
+                    timerInterval = setInterval(updateTimer, 1000);
                 }).catch(function(error) {
-                    // Automatisk afspilning blev blokeret.
-                    console.log('Autoplay blev blokeret, prøver at starte lyd på brugerinteraktion.');
-
                     document.body.addEventListener('click', function() {
                         audio.play();
+                        timerInterval = setInterval(updateTimer, 1000);
                     }, {once: true});
                 });
             }
+
+            window.addEventListener('beforeunload', function() {
+                clearInterval(timerInterval);
+                if (currentTime > highscore) {
+                    localStorage.setItem('highscore', currentTime);
+                }
+            });
         });
     </script>
 </body>
