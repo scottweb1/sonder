@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sondergaard</title>
     <style>
+        body {background-color: black;}
         .rotate {
             width: 200px; /* Juster størrelsen som ønsket */
             height: 200px; /* Juster størrelsen som ønsket */
@@ -27,10 +28,30 @@
     </style>
 </head>
 <body>
-    <audio autoplay>
+    <audio id="background-audio">
         <source src="roverflexx.mp3" type="audio/mpeg">
         Din browser understøtter ikke afspilning af lydfiler.
     </audio>
     <img src="https://yt3.googleusercontent.com/boN_PkudgYzV03V58apEDgM8GMoLDPPcv5IFJ6Xtnfexn0fduAr2DLo3wTp-zQFMTMxCGaiw=s900-c-k-c0x00ffffff-no-rj" alt="Roterende Billede" class="rotate">
+
+    <script>
+        window.addEventListener('load', function() {
+            var audio = document.getElementById('background-audio');
+            var playPromise = audio.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(function() {
+                    // Lyd blev afspillet automatisk.
+                }).catch(function(error) {
+                    // Automatisk afspilning blev blokeret.
+                    console.log('Autoplay blev blokeret, prøver at starte lyd på brugerinteraktion.');
+
+                    document.body.addEventListener('click', function() {
+                        audio.play();
+                    }, {once: true});
+                });
+            }
+        });
+    </script>
 </body>
 </html>
